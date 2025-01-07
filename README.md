@@ -20,13 +20,15 @@ A Retrieval-Augmented Generation (RAG) system built with Streamlit that allows u
 ## Installation
 
 1. Clone the repository:
-```git clone <repository-url>
-cd <repository-name>```
+```bash
+git clone <repository-url>
+cd <repository-name>
 2. Create and activate a virtual environment:
-```python -m venv venv
-source venv/bin/activate # On Windows, use: venv\Scripts\activate```
+python -m venv venv
+source venv/bin/activate   # On Windows, use: venv\Scripts\activate
+
 3. Install dependencies:
-```pip install -r requirements.txt```
+pip install -r requirements.txt
 4. Set up the LLaMA model:
    - Download the LLaMA model in GGUF format
    - Update the model path in `rag_system.py`
@@ -38,7 +40,7 @@ Update the model path in `rag_system.py`:
 ## Usage
 
 1. Start the Streamlit application:
-```streamlit run app.py```
+streamlit run app.py```
 2. Upload documents:
    - Use the sidebar to upload PDF or TXT files
    - Click "Initialize/Refresh RAG System" after uploading
