@@ -1,6 +1,6 @@
 from langchain_community.llms import LlamaCpp
 from langchain_community.embeddings import HuggingFaceEmbeddings
-from langchain_community.vectorstores import Chroma
+from langchain_community.vectorstores import FAISS
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.chains import RetrievalQA
 from langchain.document_loaders import DirectoryLoader, TextLoader, PyPDFLoader
@@ -56,7 +56,7 @@ def create_rag_system():
         pdf_loader = DirectoryLoader(
             "./data",
             glob="**/*.pdf",
-            loader_cls=UnstructuredPDFLoader,
+            loader_cls=PyPDFLoader,
             show_progress=True
         )
         
@@ -93,15 +93,14 @@ def create_rag_system():
     except Exception as e:
         raise Exception(f"Error processing documents: {str(e)}")
 
-    # 4. Create vector store
-    try:
-        vectorstore = Chroma.from_documents(
-            documents=splits,
-            embedding=embeddings,
-            persist_directory="./chroma_db"
-        )
-    except Exception as e:
-        raise Exception(f"Error creating vector store: {str(e)}")
+    # 4. Create FAISS vector store instead of Chroma
+    vectorstore = FAISS.from_documents(
+        documents=splits,
+        embedding=embeddings
+    )
+    
+    # Save the FAISS index locally
+    vectorstore.save_local("faiss_index")
 
     # 5. Create RAG chain
     try:

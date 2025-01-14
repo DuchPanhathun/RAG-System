@@ -15,9 +15,16 @@ def save_uploaded_file(uploaded_file):
 def main():
     st.title("RAG System Interface")
     
-    # Initialize session state for tracking document uploads
+    # Initialize session state variables
     if 'has_documents' not in st.session_state:
-        st.session_state.has_documents = False
+        st.session_state.has_documents = os.path.exists("./data") and len(os.listdir("./data")) > 0
+    if 'qa_system' not in st.session_state and st.session_state.has_documents:
+        with st.spinner("Initializing RAG system..."):
+            try:
+                st.session_state.qa_system = create_rag_system()
+                st.success("RAG system initialized!")
+            except Exception as e:
+                st.error(f"Error initializing RAG system: {str(e)}")
     
     # Sidebar for file uploads
     with st.sidebar:
@@ -52,9 +59,12 @@ def main():
                     st.error(f"Error initializing RAG system: {str(e)}")
                     st.info("Try uploading some documents first if you haven't already.")
 
-    # Show document status
+    # Update the main area display logic
     if not st.session_state.has_documents:
         st.info("👆 Please upload some documents using the sidebar to get started.")
+        return
+    elif not st.session_state.get('qa_system'):
+        st.info("Please initialize the RAG system using the sidebar button.")
         return
 
     # Main area for queries
